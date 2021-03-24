@@ -4,6 +4,26 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- Chrome for Android theme color -->
+	<meta name="theme-color" content="#358597" />
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="Blog">
+	<link rel="icon" sizes="192x192" href="img/touch/icon-192x192.png">
+
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Blog">
+	<link rel="apple-touch-icon" href="img/touch/icon-192x192.png">
+
+	<!-- Tile for Win8 -->
+	<meta name="msapplication-TileColor" content="#358597">
+	<meta name="msapplication-TileImage" content="img/touch/icon-192x192.png">
+
+	<link rel="manifest" href="manifest.json" />
 	<link rel="stylesheet" href="css/style.css"/>
 	<title>PWA - Lilian Kempees</title>
 </head>
@@ -16,8 +36,15 @@
 					<p>Made by Lilian Kempees - 2021</p>
 				</div>
 			</div>
+			<button class="fetch-content" id="json-button" value="Fetch Content!">Fetch Content!</button>
 			<div class="showcase-content">
 				<!-- Add cmgt showcase API content -->
+				<ul id="games"></ul>
+			</div>
+			<button class="fetch-tags" id="json-button_2" value="Fetch Tags!">Fetch Tags!</button>
+			<div class="showcase-content__tags">
+				<!-- Add cmgt showcase API content TAGS -->
+				<ul id="tags"></ul>
 			</div>
 		</div>
 	</main>
