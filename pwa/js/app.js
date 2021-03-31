@@ -84,19 +84,22 @@ async function fetchJSON() {
 
 		const response = await fetch("https://cmgt.hr.nl/api/projects");
 		responseJson = await response.json();
+		console.log("hier ben ik!");
 
 	} catch (error) {
 
 		responseJson = await localForage.getItem("projects") ;
-
+		console.log(responseJson);
+		console.log("hier ben ik anders!")
 	}
 
+	console.log(responseJson)
 	ul.innerHTML = responseJson.data.map(createProject).join('\n');
 	
 }
 
 function createProject(project){
-	console.log(project)
+
 	return `
 		<li class="project">
 			<div class="project__img">

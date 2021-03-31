@@ -2931,7 +2931,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Imports
 // Variables
-const staticCacheName = "site-static-v1"; // Caching our assets
+const staticCacheName = "site-static-v4"; // Caching our assets
 
 const assets = ["/", "/index.html", "/style.78032849.css", "/app.c3f9f951.js", "https://fonts.googleapis.com/css2?family=Inter&display=swap"]; // Install new service worker
 
@@ -2953,7 +2953,6 @@ self.addEventListener("activate", activateEvent => {
 
 self.addEventListener('fetch', fetchEvent => {
   const fetchUrl = "https://cmgt.hr.nl/api/projects";
-  console.log(fetchEvent.request.url);
 
   if (fetchEvent.request.url == fetchUrl) {
     fetchEvent.respondWith(networkFirst(fetchUrl));
@@ -2968,8 +2967,9 @@ async function networkFirst(fetchUrl) {
   try {
     const res = await fetch(fetchUrl);
     const data = await res.clone().json();
+    console.log(data);
 
-    _localforage.default.setItem("projects", data);
+    _localforage.default.setItem("project", map(data));
 
     return res;
   } catch (error) {

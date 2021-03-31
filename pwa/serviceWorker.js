@@ -3,7 +3,7 @@
 import localForage from "localforage";
 
 // Variables
-const staticCacheName = "site-static-v1";
+const staticCacheName = "site-static-v4";
 
 // Caching our assets
 const assets = [
@@ -44,7 +44,6 @@ self.addEventListener("activate", activateEvent => {
 self.addEventListener('fetch', fetchEvent => {
 
 	const fetchUrl = "https://cmgt.hr.nl/api/projects";
-	console.log(fetchEvent.request.url)
 
 	if (fetchEvent.request.url == fetchUrl) {
 		
@@ -74,8 +73,9 @@ async function networkFirst( fetchUrl) {
 			
 		const res = await fetch(fetchUrl);
 		const data = await res.clone().json();
+		console.log(data);
 
-		localForage.setItem("projects", data);
+		localForage.setItem("project", map(data));
 		return res;
 	
 	} catch( error ) {
