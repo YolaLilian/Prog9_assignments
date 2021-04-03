@@ -2974,7 +2974,7 @@ async function networkFirst(fetchUrl) {
     return res;
   } catch (error) {
     const storage = await _localforage.default.getItem("projects");
-    return new Response(storage);
+    return Promise.resolve(new Response(storage));
   }
 }
 },{"localforage":"node_modules/localforage/dist/localforage.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {

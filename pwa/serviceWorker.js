@@ -81,7 +81,9 @@ async function networkFirst( fetchUrl) {
 	} catch( error ) {
 
 		const storage = await localForage.getItem("projects");
-		return new Response(storage);
+		return Promise.resolve( 
+			new Response(storage)
+		);
 
 	}	
 
