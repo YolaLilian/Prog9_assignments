@@ -7,131 +7,123 @@ class GameAI {
     public static moveKnight(king:King, knights: Knight[], gameState:GameState) {
 
         let t0 = performance.now();
-        const depth = 2;
+
+        // function miniMax(gameState: GameState, depth: number, maximizingPlayer: boolean): number {
+        function miniMax(gameState: GameState, depth: number, alpha: number, beta: number, maximizingPlayer: boolean): number {
+            
+            const score = gameState.getScore();
+
+            if( depth === 0 || score[1] ) {
+
+                return score[0]
+
+            }
+            
+            if( maximizingPlayer ) { // is true
+                
+                // King move
+                let maximumEval = -Infinity;
+                const kingLegalMoves = king.getMoves(gameState.kingPos);
+                const gameStateCopy = gameState.copy();
+                
+                for ( const move of kingLegalMoves ) {
+                    
+                    gameStateCopy.kingPos = move;
+
+                    // Else gets called in the miniMax function, by setting maximizingPlayer to false
+
+                    // const currentEval = miniMax(gameStateCopy, depth -1, false);
+                    const currentEval = miniMax(gameStateCopy, depth -1, alpha, beta, false);
+                    maximumEval = Math.max(maximumEval, currentEval);
+                    
+                    // Add alpha beta pruning
+                    alpha = Math.max( alpha, currentEval );
+
+                    if ( beta <= alpha ) {
+
+                        break;
+
+                    }
+
+                };
+
+                return maximumEval;
+
+            } else { // is false
+
+                // Knights move
+                let minimumEval = Infinity;
+
+                knights.forEach((knight, i) => {
+                    
+                    const knightLegalMoves = knight.getMoves(gameState.knightPositions[i]);
+                    const gameStateCopy = gameState.copy();
+
+                    for ( const move of knightLegalMoves ) {
+
+                        gameStateCopy.knightPositions[i] = move;
+
+                        // If gets called in the miniMax function, by setting maximizingPLayer to true
+
+                        // const currentEval = miniMax(gameStateCopy, depth - 1, true);
+                        const currentEval = miniMax(gameStateCopy, depth - 1, alpha, beta, true);
+                        minimumEval = Math.min(minimumEval, currentEval);
+                        
+                        // Add alpha beta pruning
+                        beta = Math.min ( beta, currentEval);
+
+                        if ( beta <= alpha ) {
+
+                            break;
+        
+                        }
+                        
+                    };
+
+                } );
+
+                return minimumEval;
+
+            };
+            
+            
+        };
+
+        const depth = 8;
         let minimumEval = +Infinity;
         let bestMove: [number, number] = [0,0];
         let indexKnight = 0;
-
+        
         // Loop through the knights array
-        for(let i = 0; i<knights.length; i++) {
+        knights.forEach( (knight, i) => {
 
-            // for every knight, get the legal moves
-            const KnightLegalMoves = knights[i].getMoves(gameState.knightPositions[i]);
+            // For every knight, get the legal moves
+            const moves = knight.getMoves(gameState.knightPositions[i]);
+            const gameStateCopy = gameState.copy();
 
-            for(let move of KnightLegalMoves) {
-
-                const gameStateCopy = gameState.copy();
+            moves.forEach((move) => {
                 gameStateCopy.knightPositions[i] = move;
 
-                // de miniMax-loop wordt aangeroepen
-                const Eval = this.miniMax(gameStateCopy, king, knights, depth,-Infinity, +Infinity, true);
-
-                if( Eval < minimumEval ) {
-
-                    minimumEval = Eval;
+                // First call for miniMax function, starts recursive loop.
+                // const currentEval = miniMax(gameStateCopy, depth -1, true);
+                const currentEval = miniMax(gameStateCopy, depth -1, -Infinity, Infinity, true);
+                if (currentEval < minimumEval) {
+                    minimumEval = currentEval;
                     bestMove = move;
                     indexKnight = i;
-                    // console.log( minimumEval);
-                }
+                }   
 
-            }
+            } );
 
-        }
+        } );
 
-        knights[indexKnight].setPosition(bestMove);                                                                
-        gameState.knightPositions[indexKnight] = bestMove;    
-        
+        knights[indexKnight].setPosition(bestMove);
+        gameState.knightPositions[indexKnight] = bestMove; 
+
         let t1 = performance.now();
+        // console.log("de code is geupdate!");
         console.log("AI move took " + (t1 - t0) + " milliseconds.");
 
     }
 
-    public static miniMax(gameState: GameState, king: King, knights: Knight[], depth: number, alpha: number, beta: number, maximizingPlayer: boolean): number {
-        
-        const score = gameState.getScore();
-
-        if( depth === 0 || score[1] ) {
-
-            return score[0]
-        }
-        
-        if( maximizingPlayer ) { // is true
-            
-            // King move
-            let maximumEval = -Infinity;
-            const gameStateCopy = gameState.copy();
-            const KingLegalMoves = king.getMoves(gameStateCopy.kingPos)
-            let moves: number[] = [0];
-
-
-            for( let move of KingLegalMoves ) {
-
-                gameStateCopy.kingPos = move; 
-
-                // Else gets called in the miniMax function, by setting maximizingPlayer to false
-                const currentEval = this.miniMax(gameStateCopy, king, knights, depth -1, alpha, beta, false);
-                maximumEval = Math.max(maximumEval, currentEval);
-                alpha = Math.max( alpha, maximumEval );
-                // moves.push(maximumEval);
-                // console.log("maximumEval = " + maximumEval);
-                if ( beta <= alpha ) {
-                    // console.log(alpha);
-                    break;
-
-                } 
-
-            };
-
-            // console.log(moves);
-            let bestMove = Math.max(...moves);
-            // console.log(bestMove);
-            return bestMove;
-
-        } else { // is false
-
-            // Knights move
-            let minimumEval = Infinity;
-            let moves: number[] = [0];
-
-            // console.log(depth);
-
-            for(let i = 0; i < knights.length; i++) {
-            
-                const gameStateCopy = gameState.copy();
-                const KnightLegalMoves = knights[i].getMoves(gameStateCopy.knightPositions[i]);
-
-                for(let move of KnightLegalMoves) {
-
-                    gameStateCopy.knightPositions[i] = move;
-    
-                    // If gets called in the miniMax function, by setting maximizingPLayer to true
-                    const currentEval = this.miniMax(gameStateCopy, king, knights, depth -1, alpha, beta, true);
-                    minimumEval = Math.min(minimumEval, currentEval);
-                    beta = Math.min ( beta, minimumEval);
-                    // moves.push(minimumEval);
-                    // console.log("minEval = " + minimumEval);
-
-                    if ( beta <=  alpha) {
-
-                        // console.log("ik ben kleiner of gelijk aan alpha");
-                        break;
-                        
-                    }
-    
-                }
-
-            };
-
-            // console.log(moves);
-            let bestMove = Math.min(...moves);
-            // console.log(bestMove);
-            if (bestMove !== 0 ) {
-                // console.log(bestMove);
-            };
-            return bestMove;
-
-        }
-
-    }
-
-}
+};

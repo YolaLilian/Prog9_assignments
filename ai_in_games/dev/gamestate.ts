@@ -39,7 +39,7 @@ class GameState {
         // if row is gelijk aan huidige row -> 0
         // if row is hoger dan huidige row -> +10;
 
-        if (row >= currentKingRow) {
+        if (row > currentKingRow) {
 
             this.score[0] -= 10;
 
@@ -47,13 +47,14 @@ class GameState {
 
             this.score[0] += 0;
 
-        } else if (row <= currentKingRow) {
+        } else if (row < currentKingRow) {
 
             this.score[0] += 10;
             
         } 
 
         // Hint: use the position of the king stored in this.kingPos
+        // console.log(this.score);
         return this.score;
     }
 

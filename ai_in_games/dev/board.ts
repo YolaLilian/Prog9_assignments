@@ -56,4 +56,9 @@ class Board {
     public static samePosition(a:[number, number], b:[number, number]): boolean {
         return (a[0] == b[0]) && (a[1] == b[1]);
     }
+
+    public static collidingPosition(a:[number, number], b:[number, number]): boolean {
+        console.log(a[0] - b[0]);
+        return ((Math.abs(a[0] - b[0]) === 1) && (Math.abs(a[1] - b[1]) <= 1) || (Math.abs(a[1] - b[1]) === 1) && (Math.abs(a[0] - b[0]) <= 1));
+    }
 }
