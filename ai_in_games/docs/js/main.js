@@ -113,19 +113,34 @@ class Board {
 }
 class GameState {
     constructor(kingPos, knightPositions) {
+        this.score = [0, false];
         this.kingPos = kingPos;
         this.knightPositions = knightPositions;
+        this.currentKingPos = kingPos;
     }
     getScore() {
+        let row;
+        let currentKingRow;
         for (let z of this.knightPositions) {
             if (Board.samePosition(z, this.kingPos)) {
-                return [-100, true];
+                this.score = [-100, true];
             }
         }
         if (this.kingPos[1] == 0) {
-            return [100, true];
+            this.score = [100, true];
         }
-        return [0, false];
+        row = this.kingPos[1];
+        currentKingRow = this.currentKingPos[1];
+        if (row >= currentKingRow) {
+            this.score[0] -= 10;
+        }
+        else if (row === currentKingRow) {
+            this.score[0] += 0;
+        }
+        else if (row <= currentKingRow) {
+            this.score[0] += 10;
+        }
+        return this.score;
     }
     copy() {
         const knightPosCopy = Object.assign([], this.knightPositions);
@@ -226,15 +241,74 @@ window.customElements.define("knight-component", Knight);
 class GameAI {
     static moveKnight(king, knights, gameState) {
         let t0 = performance.now();
-        console.log(king);
-        let i = Math.floor(Math.random() * Math.floor(knights.length));
-        let legalMoves = knights[i].getMoves();
-        console.log(legalMoves);
-        let j = Math.floor(Math.random() * Math.floor(legalMoves.length));
-        knights[i].setPosition(legalMoves[j]);
-        gameState.knightPositions[i] = legalMoves[j];
+        const depth = 2;
+        let minimumEval = +Infinity;
+        let bestMove = [0, 0];
+        let indexKnight = 0;
+        for (let i = 0; i < knights.length; i++) {
+            const KnightLegalMoves = knights[i].getMoves(gameState.knightPositions[i]);
+            for (let move of KnightLegalMoves) {
+                const gameStateCopy = gameState.copy();
+                gameStateCopy.knightPositions[i] = move;
+                const Eval = this.miniMax(gameStateCopy, king, knights, depth, -Infinity, +Infinity, true);
+                if (Eval < minimumEval) {
+                    minimumEval = Eval;
+                    bestMove = move;
+                    indexKnight = i;
+                }
+            }
+        }
+        knights[indexKnight].setPosition(bestMove);
+        gameState.knightPositions[indexKnight] = bestMove;
         let t1 = performance.now();
         console.log("AI move took " + (t1 - t0) + " milliseconds.");
+    }
+    static miniMax(gameState, king, knights, depth, alpha, beta, maximizingPlayer) {
+        const score = gameState.getScore();
+        if (depth === 0 || score[1]) {
+            return score[0];
+        }
+        if (maximizingPlayer) {
+            let maximumEval = -Infinity;
+            const gameStateCopy = gameState.copy();
+            const KingLegalMoves = king.getMoves(gameStateCopy.kingPos);
+            let moves = [0];
+            for (let move of KingLegalMoves) {
+                gameStateCopy.kingPos = move;
+                const currentEval = this.miniMax(gameStateCopy, king, knights, depth - 1, alpha, beta, false);
+                maximumEval = Math.max(maximumEval, currentEval);
+                alpha = Math.max(alpha, maximumEval);
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            ;
+            let bestMove = Math.max(...moves);
+            return bestMove;
+        }
+        else {
+            let minimumEval = Infinity;
+            let moves = [0];
+            for (let i = 0; i < knights.length; i++) {
+                const gameStateCopy = gameState.copy();
+                const KnightLegalMoves = knights[i].getMoves(gameStateCopy.knightPositions[i]);
+                for (let move of KnightLegalMoves) {
+                    gameStateCopy.knightPositions[i] = move;
+                    const currentEval = this.miniMax(gameStateCopy, king, knights, depth - 1, alpha, beta, true);
+                    minimumEval = Math.min(minimumEval, currentEval);
+                    beta = Math.min(beta, minimumEval);
+                    if (beta <= alpha) {
+                        break;
+                    }
+                }
+            }
+            ;
+            let bestMove = Math.min(...moves);
+            if (bestMove !== 0) {
+            }
+            ;
+            return bestMove;
+        }
     }
 }
 class King extends ChessPiece {
