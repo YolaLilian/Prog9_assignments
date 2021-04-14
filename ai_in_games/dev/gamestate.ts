@@ -54,8 +54,8 @@ class GameState {
         } 
 
         // Hint: use the position of the king stored in this.kingPos
-        // console.log(this.score);
-        return this.score;
+        // return this.score;
+        return [this.kingPos[1] * -1, false];
     }
 
     // create a copy of the gamestate (needed by AI to look into the future)

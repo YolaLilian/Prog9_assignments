@@ -144,7 +144,7 @@ class GameState {
         else if (row < currentKingRow) {
             this.score[0] += 10;
         }
-        return this.score;
+        return [this.kingPos[1] * -1, false];
     }
     copy() {
         const knightPosCopy = Object.assign([], this.knightPositions);
