@@ -23,3 +23,15 @@ I used these tutorials to get to my current result:
 I also used these explanations for the additional learning goals:
 - https://ai.stackexchange.com/questions/17188/why-does-the-adversarial-search-minimax-algorithm-use-depth-first-search-dfs-i
 - https://www.javatpoint.com/difference-between-artificial-intelligence-and-machine-learning#:~:text=Difference%20between%20Artificial%20intelligence%20and%20Machine%20learning,-Artificial%20intelligence%20and&text=AI%20is%20a%20bigger%20concept,data%20without%20being%20programmed%20explicitly. 
+
+## Fourth assignment: IoT
+For this assignment, I've tried to implement a simple led loop combined with speed changes on button press. Tilting the circuit playground will cause it to print something in the console (or serial monitor).
+
+For completing this assignment, I've used the following sites:
+- https://www.geeksforgeeks.org/difference-between-interrupt-and-polling/
+- https://learn.adafruit.com/introducing-circuit-playground/guided-tour
+- https://cdn-learn.adafruit.com/assets/assets/000/049/780/original/Adafruit_Circuit_Playground_Express_Pinout.pdf
+- https://learn.adafruit.com/circuit-playground-lesson-number-0/buttons-slide-switch
+- https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
+- https://learn.adafruit.com/circuit-playground-light-pod/code
+- https://www.arduino.cc/en/tutorial/pushbutton
