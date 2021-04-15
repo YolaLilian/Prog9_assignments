@@ -5,10 +5,6 @@
 #include "SlowLed.h"
 
 int pixeln = 0;
-//int buttonA = 19;
-//int buttonB = 5;
-//bool leftButtonPressed;
-//bool rightButtonPressed;
 bool flowActive;
 
 SlowLed sL = SlowLed(0);
@@ -19,34 +15,19 @@ void setup() {
   Serial.begin(9600);
   CircuitPlayground.begin();
 
-//  pinMode(buttonA, INPUT);
-//  pinMode(buttonB, INPUT);
   Serial.println("Circuit Playground test!");
 
   flowActive = true;
 
-   attachInterrupt(
-    digitalPinToInterrupt(4),
-    buttonA,
-    RISING
-  );
   attachInterrupt(
-    digitalPinToInterrupt(5),
-    buttonB,
-    RISING
+    digitalPinToInterrupt(7),
+    switchSpeed,
+    CHANGE
   );
 };
 
 void loop() {
   // put your main code here, to run repeatedly:
-//  leftButtonPressed = CircuitPlayground.leftButton();
-//  rightButtonPressed = CircuitPlayground.rightButton();
-  
-//  if (leftButtonPressed) {
-//    flowActive = true;
-//  } else if (rightButtonPressed) {
-//    flowActive = false;
-//  }
   
   if (flowActive) {
     sL.move();
@@ -55,10 +36,13 @@ void loop() {
   }
 };
 
-void buttonA() {
-  flowActive = true;
-}
+void switchSpeed() {
 
-void buttonB() {
-  flowActive = false;
-};
+  if (CircuitPlayground.slideSwitch()) { 
+    flowActive = true;
+  }
+
+  if (!CircuitPlayground.slideSwitch()) {
+    flowActive = false;
+  }
+}
