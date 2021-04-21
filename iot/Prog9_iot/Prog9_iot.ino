@@ -3,19 +3,26 @@
 #include "Led.h"
 #include "FastLed.h"
 #include "SlowLed.h"
+#include "Art.h"
+#include "LeftArt.h"
+#include "MiddleArt.h"
+#include "RightArt.h"
 
 int pixeln = 0;
 bool flowActive;
 
 SlowLed sL = SlowLed(0);
 FastLed fL = FastLed(0);
+LeftArt lA = LeftArt();
+MiddleArt mA = MiddleArt();
+RightArt rA = RightArt();
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   CircuitPlayground.begin();
 
-  Serial.println("Circuit Playground test!");
+  CircuitPlayground.setAccelRange(LIS3DH_RANGE_2_G);
 
   flowActive = true;
 
@@ -24,6 +31,7 @@ void setup() {
     switchSpeed,
     CHANGE
   );
+
 };
 
 void loop() {
@@ -34,6 +42,8 @@ void loop() {
   } else {
     fL.move();
   }
+
+  drawArt();
 };
 
 void switchSpeed() {
@@ -44,5 +54,18 @@ void switchSpeed() {
 
   if (!CircuitPlayground.slideSwitch()) {
     flowActive = false;
+  }
+}
+
+void drawArt() {
+
+  if (CircuitPlayground.motionX() < -3.0) {
+    rA.draw();
+  }
+  if (CircuitPlayground.motionX() >= -2.9 && CircuitPlayground.motionX() <= 2.9) {
+    mA.draw();
+  } 
+  if (CircuitPlayground.motionX() > 3.0){
+    lA.draw();
   }
 }
